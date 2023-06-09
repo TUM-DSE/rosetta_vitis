@@ -1,7 +1,8 @@
 include ../Makefile.inc
 
 TARGET=hw
-CFLAGS:=-I../utils -I$(XILINX_VIVADO)/include $(CFLAGS)
+# CFLAGS:=-I../utils -I$(XILINX_VIVADO)/include $(CFLAGS)
+CFLAGS:=-I../utils -I$(XILINX_VIVADO)/include -I$(XILINX_HLS)/include $(CFLAGS)
 LDFLAGS:=-L../utils -L../minizip -lCraftUtils $(LDFLAGS)
 
 # HDR are pure headers
@@ -27,13 +28,13 @@ $(EXE): %.exe: %.o $(OBJ)
 	-L${XILINX_XRT}/lib/ -lOpenCL -lpthread -lrt -lstdc++
 
 bnn.xo: Accel.cpp
-	v++ -c -t ${TARGET} --config u50.cfg -k bnn --hls.pre_tcl opt.tcl -I./ ./Accel.cpp  -o bnn.xo 
+	v++ -c -t ${TARGET} --config ../config/u50.cfg -k bnn --hls.pre_tcl opt.tcl -I./ ./Accel.cpp  -o bnn.xo 
 
 bnn.xclbin: ./bnn.xo
-	v++ -l -t ${TARGET} --config u50.cfg ./bnn.xo -o bnn.xclbin
+	v++ -l -t ${TARGET} --config ../config/u50.cfg ./bnn.xo -o bnn.xclbin
 
 emconfig.json:
-	emconfigutil --platform  xilinx_u50_gen3x16_xdma_201920_3 --nd 1
+	emconfigutil --platform  xilinx_u50_gen3x16_xdma_5_202210_1 --nd 1
 
 
 

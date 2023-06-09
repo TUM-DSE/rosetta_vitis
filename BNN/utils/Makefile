@@ -1,6 +1,7 @@
 include ../Makefile.inc
 
-CFLAGS:=-I/$(XILINX_VIVADO)/include $(CFLAGS)
+# CFLAGS:=-I/$(XILINX_VIVADO)/include $(CFLAGS)
+CFLAGS:=-I/$(XILINX_VIVADO)/include -I/$(XILINX_HLS)/include $(CFLAGS)
 # HDR are pure headers
 HDR=Debug.h BitVector.h QuantizeParams.h Layers.h Typedefs.h
 # OBJ must include a .cpp and .h with same name

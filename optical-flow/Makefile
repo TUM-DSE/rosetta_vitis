@@ -17,7 +17,7 @@ HOST_OBJ=main.o top.o
 
 
 
-INCLUDE=-I $(XILINX_VIVADO)/include 
+INCLUDE=-I $(XILINX_VIVADO)/include  -I $(XILINX_HLS)/include 
 OPT_LEVEL=-O3
 CFLAGS=$(INCLUDE) $(OPT_LEVEL)
 CXX=g++

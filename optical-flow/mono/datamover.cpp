@@ -1,7 +1,8 @@
 #include "../host/typedefs.h"
 
 // use HLS video library
-#include </scratch/unsafe/Xilinx/Vivado/2022.1/include/multimediaIps/xf_video_mem.hpp>
+// #include </scratch/unsafe/Xilinx/Vivado/2022.1/include/multimediaIps/xf_video_mem.hpp>
+#include </share/xilinx/Vivado/2022.1/include/multimediaIps/xf_video_mem.hpp>
 #include <stdio.h>
 
 
