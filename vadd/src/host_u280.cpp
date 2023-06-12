@@ -51,7 +51,7 @@ ALL TIMES.
 TIMER_INIT(5);
 
 // static const int DATA_SIZE = 4096;
-static const int DATA_SIZE = 4096*1024*8; // 128 MB (32M * sizeof(int))
+static const int DATA_SIZE = 4096*1024*8; // 128MB
 
 static const std::string error_message =
     "Error: Result mismatch:\n"
@@ -88,6 +88,7 @@ int main(int argc, char* argv[]) {
             devices.clear();
             platform.getDevices(CL_DEVICE_TYPE_ACCELERATOR, &devices);
 	    if (devices.size()){
+        devices[0] = devices[1]; // FIXME: assuming there are more than two xilinx devices, and devices[1] is u280
 		    device = devices[0];
 		    found_device = true;
 		    break;
@@ -193,6 +194,7 @@ int main(int argc, char* argv[]) {
     printf("  exec kernel           : %12.4f ms\n", TIMER_REPORT_MS(0));
     printf("  throughput            : %12.4f MB/s\n", size_in_megabytes / (TIMER_REPORT_MS(0)/1000) );
     printf("------------------------------------------------------\n");
+
 
 
     std::cout << "TEST " << (match ? "FAILED" : "PASSED") << std::endl; 

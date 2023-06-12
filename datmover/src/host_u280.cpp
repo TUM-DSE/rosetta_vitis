@@ -57,6 +57,7 @@ int main(int argc, char **argv)
     std::string binaryFile = (argc != 2) ? "datmover.xclbin" : argv[1];
     unsigned fileBufSize;
     std::vector<cl::Device> devices = get_xilinx_devices();
+    devices[0] = devices[1]; // FIXME: assuming there are more than two xilinx devices, and devices[1] is u280
     devices.resize(1);
     cl::Device device = devices[0];
     cl::Context context(device, NULL, NULL, NULL, &err);
@@ -106,9 +107,11 @@ int main(int argc, char **argv)
     krnl_vector_cp.setArg(3, out2_buf);
     krnl_vector_cp.setArg(4, DATA_SIZE);
 
+
     // Schedule transfer of inputs to device memory, execution of kernel, and transfer of outputs back to host memory
     q.enqueueMigrateMemObjects({in1_buf, in2_buf}, 0 /* 0 means from host*/);
 
+    // q.enqueueTask(krnl_vector_cp);
     TIMER_START(0);
     for(int i=0; i < 10; i++)
     {
@@ -129,8 +132,8 @@ int main(int argc, char **argv)
     /*
     for (int i = 0; i < DATA_SIZE; i++)
     {
-            // std::cout << " in1[" << i << "]=" << in1[i] <<  "  in2[" << i << "] = " << in2[i]  << std::endl; 
-            // std::cout << "out1[" << i << "]=" << out1[i] << " out2[" << i << "] = " << out2[i] << std::endl; 
+            //std::cout << " in1[" << i << "]=" << in1[i] <<  "  in2[" << i << "] = " << in2[i]  << std::endl; 
+            //std::cout << "out1[" << i << "]=" << out1[i] << " out2[" << i << "] = " << out2[i] << std::endl; 
             //match = false;
             //break;
         

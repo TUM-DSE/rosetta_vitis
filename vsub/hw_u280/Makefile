@@ -20,7 +20,7 @@ $(PRJ_NAME).xclbin: ./$(PRJ_NAME).xo
 	v++ -l -t ${TARGET} --config $(SRC_DIR)/u280.cfg --vivado.synth.jobs $(MaxJobNum) ./$(PRJ_NAME).xo -o $(PRJ_NAME).xclbin
 
 emconfig.json:
-	emconfigutil --platform xilinx_u280_gen3x16_xdma_base_1 --nd 1
+	emconfigutil --platform xilinx_u280_gen3x16_xdma_1_202211_1 --nd 1
 
 clean:
 	rm -rf $(PRJ_NAME)* app.exe *json *csv *log *summary _x xilinx* .run .Xil .ipcache *.jou
