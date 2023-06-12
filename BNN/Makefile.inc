@@ -1,5 +1,5 @@
 CXX=g++
-CFLAGS=-O3 -g
+CFLAGS=-O0 -g
 MINIZIP_LDFLAGS=-lminizip -laes -lz
 LDFLAGS=$(MINIZIP_LDFLAGS)
 

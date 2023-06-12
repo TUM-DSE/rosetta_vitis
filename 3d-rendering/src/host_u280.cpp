@@ -55,6 +55,7 @@ int main(int argc, char **argv)
     std::string binaryFile = (argc != 2) ? "rendering.xclbin" : argv[1];
     unsigned fileBufSize;
     std::vector<cl::Device> devices = get_xilinx_devices();
+    devices[0] = devices[1]; // FIXME: assuming there are more than two xilinx devices, and devices[1] is u280
     devices.resize(1);
     cl::Device device = devices[0];
     cl::Context context(device, NULL, NULL, NULL, &err);

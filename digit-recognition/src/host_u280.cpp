@@ -36,12 +36,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <fstream>
 #include <CL/cl2.hpp>
 #include "typedefs.h"
-#include "input_data.h"
+#include "training_data.h"
+#include "testing_data.h"
+
 
 // Forward declaration of utility functions included at the end of this file
 std::vector<cl::Device> get_xilinx_devices();
 char *read_binary_file(const std::string &xclbin_file_name, unsigned &nb);
-void check_results(bit32* output);
+void check_results(LabelType* result, const LabelType* expected, int cnt);
 
 // ------------------------------------------------------------------------------------
 // Main program
@@ -52,9 +54,10 @@ int main(int argc, char **argv)
     // Step 1: Initialize the OpenCL environment
     // ------------------------------------------------------------------------------------
     cl_int err;
-    std::string binaryFile = (argc != 2) ? "rendering.xclbin" : argv[1];
+    std::string binaryFile = (argc != 2) ? "DigitRec.xclbin" : argv[1];
     unsigned fileBufSize;
     std::vector<cl::Device> devices = get_xilinx_devices();
+    devices[0] = devices[1]; // FIXME: assuming there are more than two xilinx devices, and devices[1] is u280
     devices.resize(1);
     cl::Device device = devices[0];
     cl::Context context(device, NULL, NULL, NULL, &err);
@@ -62,65 +65,77 @@ int main(int argc, char **argv)
     cl::Program::Binaries bins{{fileBuf, fileBufSize}};
     cl::Program program(context, devices, bins, NULL, &err);
     cl::CommandQueue q(context, device, CL_QUEUE_PROFILING_ENABLE, &err);
-    cl::Kernel krnl_rendering(program, "rendering", &err);
+    cl::Kernel krnl_DigitRec(program, "DigitRec", &err);
 
     // ------------------------------------------------------------------------------------
     // Step 2: Create buffers and initialize test values
     // ------------------------------------------------------------------------------------
     // Create the buffers and allocate memory
-    cl::Buffer in1_buf(context, CL_MEM_READ_ONLY, sizeof(bit32) * 3 * NUM_3D_TRI, NULL, &err);
-    cl::Buffer out_buf(context, CL_MEM_WRITE_ONLY, sizeof(bit32) * NUM_FB, NULL, &err);
+    cl::Buffer in1_buf(context, CL_MEM_READ_ONLY, sizeof(WholeDigitType) * NUM_TRAINING / 2, NULL, &err);
+    cl::Buffer in2_buf(context, CL_MEM_READ_ONLY, sizeof(WholeDigitType) * NUM_TRAINING / 2, NULL, &err);
+    cl::Buffer in3_buf(context, CL_MEM_READ_ONLY, sizeof(WholeDigitType) * NUM_TEST, NULL, &err);
+    cl::Buffer out_buf(context, CL_MEM_WRITE_ONLY, sizeof(LabelType) * NUM_TEST, NULL, &err);
 
     // Map buffers to kernel arguments, thereby assigning them to specific device memory banks
-    krnl_rendering.setArg(0, in1_buf);
-    krnl_rendering.setArg(1, out_buf);
+    krnl_DigitRec.setArg(0, in1_buf);
+    krnl_DigitRec.setArg(1, in2_buf);
+    krnl_DigitRec.setArg(2, in3_buf);
+    krnl_DigitRec.setArg(3, out_buf);
 
     // Map host-side buffer memory to user-space pointers
-    bit32 *in1 = (bit32 *)q.enqueueMapBuffer(in1_buf, CL_TRUE, CL_MAP_WRITE, 0, sizeof(bit32) * 3 * NUM_3D_TRI);
-    bit32 *out = (bit32 *)q.enqueueMapBuffer(out_buf, CL_TRUE, CL_MAP_WRITE | CL_MAP_READ, 0, sizeof(bit32) * NUM_FB);
+    WholeDigitType *training_in0 = (WholeDigitType *)q.enqueueMapBuffer(in1_buf, CL_TRUE, CL_MAP_WRITE, 0, sizeof(WholeDigitType) * NUM_TRAINING / 2);
+    WholeDigitType *training_in1 = (WholeDigitType *)q.enqueueMapBuffer(in2_buf, CL_TRUE, CL_MAP_WRITE, 0, sizeof(WholeDigitType) * NUM_TRAINING / 2);
+    WholeDigitType *test_in = (WholeDigitType *)q.enqueueMapBuffer(in3_buf, CL_TRUE, CL_MAP_WRITE, 0, sizeof(WholeDigitType) * NUM_TEST);
+    LabelType *result = (LabelType *)q.enqueueMapBuffer(out_buf, CL_TRUE, CL_MAP_WRITE | CL_MAP_READ, 0, sizeof(LabelType) * NUM_TEST);
 
     // Initialize the vectors used in the test
-    // pack input data for better performance
-    for ( int i = 0; i < NUM_3D_TRI; i++)
+    // pack the data into a wide datatype
+    for (int i = 0; i < NUM_TRAINING / 2; i ++ )
     {
-      in1[3*i](7,0)     = triangle_3ds[i].x0;
-      in1[3*i](15,8)    = triangle_3ds[i].y0;
-      in1[3*i](23,16)   = triangle_3ds[i].z0;
-      in1[3*i](31,24)   = triangle_3ds[i].x1;
-      in1[3*i+1](7,0)   = triangle_3ds[i].y1;
-      in1[3*i+1](15,8)  = triangle_3ds[i].z1;
-      in1[3*i+1](23,16) = triangle_3ds[i].x2;
-      in1[3*i+1](31,24) = triangle_3ds[i].y2;
-      in1[3*i+2](7,0)   = triangle_3ds[i].z2;
-      in1[3*i+2](31,8)  = 0;
+      training_in0[i].range(63 , 0  ) = training_data[i*DIGIT_WIDTH+0];
+      training_in0[i].range(127, 64 ) = training_data[i*DIGIT_WIDTH+1];
+      training_in0[i].range(191, 128) = training_data[i*DIGIT_WIDTH+2];
+      training_in0[i].range(255, 192) = training_data[i*DIGIT_WIDTH+3];
+    }
+    for (int i = 0; i < NUM_TRAINING / 2; i ++ )
+    {
+      training_in1[i].range(63 , 0  ) = training_data[(NUM_TRAINING / 2 + i)*DIGIT_WIDTH+0];
+      training_in1[i].range(127, 64 ) = training_data[(NUM_TRAINING / 2 + i)*DIGIT_WIDTH+1];
+      training_in1[i].range(191, 128) = training_data[(NUM_TRAINING / 2 + i)*DIGIT_WIDTH+2];
+      training_in1[i].range(255, 192) = training_data[(NUM_TRAINING / 2 + i)*DIGIT_WIDTH+3];
+    }
+
+    for (int i = 0; i < NUM_TEST; i ++ )
+    {
+      test_in[i].range(63 , 0  ) = testing_data[i*DIGIT_WIDTH+0];
+      test_in[i].range(127, 64 ) = testing_data[i*DIGIT_WIDTH+1];
+      test_in[i].range(191, 128) = testing_data[i*DIGIT_WIDTH+2];
+      test_in[i].range(255, 192) = testing_data[i*DIGIT_WIDTH+3];
     }
 
     // ------------------------------------------------------------------------------------
     // Step 3: Run the kernel
     // ------------------------------------------------------------------------------------
     // Set kernel arguments
+    krnl_DigitRec.setArg(0, in1_buf);
+    krnl_DigitRec.setArg(1, in2_buf);
+    krnl_DigitRec.setArg(2, in3_buf);
+    krnl_DigitRec.setArg(3, out_buf);
+    krnl_DigitRec.setArg(4, DATA_SIZE);
 
+    // Schedule transfer of inputs to device memory, execution of kernel, and transfer of outputs back to host memory
+    q.enqueueMigrateMemObjects({in1_buf}, 0 /* 0 means from host*/);
+    q.enqueueTask(krnl_DigitRec);
+    q.enqueueMigrateMemObjects({out_buf}, CL_MIGRATE_MEM_OBJECT_HOST);
 
-		krnl_rendering.setArg(0, in1_buf);
-		krnl_rendering.setArg(1, out_buf);
-		krnl_rendering.setArg(2, DATA_SIZE);
-
-	//for(int i=0; i<10; i++){
-		// Schedule transfer of inputs to device memory, execution of kernel, and transfer of outputs back to host memory
-		q.enqueueMigrateMemObjects({in1_buf}, 0 /* 0 means from host*/);
-		q.enqueueTask(krnl_rendering);
-		q.enqueueMigrateMemObjects({out_buf}, CL_MIGRATE_MEM_OBJECT_HOST);
-	//}
-
-		// Wait for all scheduled operations to finish
-		q.finish();
-
+    // Wait for all scheduled operations to finish
+    q.finish();
 
     // ------------------------------------------------------------------------------------
     // Step 4: Check Results and Release Allocated Resources
     // ------------------------------------------------------------------------------------
     bool match = true;
-    // check_results(out);
+    check_results( result, expected, NUM_TEST );
 
     delete[] fileBuf;
 
@@ -179,43 +194,28 @@ char *read_binary_file(const std::string &xclbin_file_name, unsigned &nb)
 }
 
 
-void check_results(bit32* output)
+void check_results(LabelType* result, const LabelType* expected, int cnt)
 {
-  #ifndef SW
-    bit8 frame_buffer_print[MAX_X][MAX_Y];
+  int correct_cnt = 0;
 
-    // read result from the 32-bit output buffer
-    for (int i = 0, j = 0, n = 0; n < NUM_FB; n ++ )
-    {
-      bit32 temp = output[n];
-      frame_buffer_print[i][j++] = temp(7,0);
-      frame_buffer_print[i][j++] = temp(15,8);
-      frame_buffer_print[i][j++] = temp(23,16);
-      frame_buffer_print[i][j++] = temp(31,24);
-      if(j == MAX_Y)
-      {
-        i++;
-        j = 0;
-      }
-    }
-  #endif
-
-  // print result
+  //std::ofstream ofile;
+  //ofile.open("outputs.txt");
+  //if (ofile.is_open())
   {
-    for (int j = MAX_X - 1; j >= 0; j -- )
+    for (int i = 0; i < cnt; i ++ )
     {
-      for (int i = 0; i < MAX_Y; i ++ )
-      {
-        int pix;
-        pix = frame_buffer_print[i][j].to_int();
-        if (pix){
-          std::cout << "1";
-        }else{
-          std::cout << "0";
-        }
-      }
-      std::cout << std::endl;
+      if (result[i] != expected[i])
+        std::cout << "Test " << i << ": expected = " << int(expected[i]) << ", result = " << int(result[i]) << std::endl;
+      else
+        correct_cnt ++;
     }
+
+    std::cout << "\n\t " << correct_cnt << " / " << cnt << " correct!" << std::endl;
   }
+  //else
+  //{
+  //  std::cout << "Failed to create output file!" << std::endl;
+  //}
+
 
 }

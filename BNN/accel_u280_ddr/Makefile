@@ -25,7 +25,7 @@ $(EXE): %.exe: %.o $(OBJ)
 	g++ -Wall -g -std=c++11 $^ -o $@ \
 	$(CFLAGS) $(LDFLAGS) \
 	-I${XILINX_XRT}/include/ \
-	-L${XILINX_XRT}/lib/ -lOpenCL -lpthread -lrt -lstdc++
+	-L${XILINX_XRT}/lib/ -lOpenCL -pthread -lrt -lstdc++
 
 bnn.xo: Accel.cpp
 	v++ -c -t ${TARGET} --config ../config/u280_ddr.cfg -k bnn --hls.pre_tcl opt.tcl -I./ ./Accel.cpp  -o bnn.xo 

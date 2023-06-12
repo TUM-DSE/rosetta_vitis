@@ -8,7 +8,7 @@ app.exe: $(SRC_DIR)/host.cpp
 		-I${XILINX_XRT}/include/ \
 		-I${XILINX_VIVADO}/include/ \
 		-I${XILINX_HLS}/include/ \
-		-L${XILINX_XRT}/lib/ -lOpenCL -lpthread -lrt -lstdc++
+		-L${XILINX_XRT}/lib/ -lOpenCL -pthread -lrt -lstdc++
 	
 $(PRJ_NAME).xo: $(SRC_DIR)/$(PRJ_NAME).cpp
 	v++ -c -t ${TARGET} --config $(SRC_DIR)/u50.cfg -k $(PRJ_NAME) -I${XILINX_VIVADO}/include/ -I$(SRC_DIR)/ $(SRC_DIR)/$(PRJ_NAME).cpp -o $(PRJ_NAME).xo 
