@@ -1,87 +1,46 @@
-#
-# Copyright 2019-2021 Xilinx, Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-# makefile-generator v1.0.3
-#
-# Points to top directory of Git repository
-MK_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
-COMMON_REPO ?= $(shell bash -c 'export MK_PATH=$(MK_PATH); echo $${MK_PATH%host/streaming_free_running_k2k/*}')
-PWD = $(shell readlink -f .)
-XF_PROJ_ROOT = $(shell readlink -f $(COMMON_REPO))
+SRC_DIR=../src
+img_name=$(basename $(wildcard $(SRC_DIR)/imageLib/*.cpp))
+img_obj=$(addsuffix .o, $(img_name))
 
 
-########################## Checking if PLATFORM in allowlist #######################
-PLATFORM_BLOCKLIST += 2018 qep aws-vu9p-f1 samsung u2_ zc702 nodma 
-PLATFORM ?= xilinx_zcu102_base_dfx_202210_1
-DEV_ARCH := $(shell platforminfo -p $(PLATFORM) | grep 'FPGA Family' | sed 's/.*://' | sed '/ai_engine/d' | sed 's/^[[:space:]]*//')
-CPU_TYPE := $(shell platforminfo -p $(PLATFORM) | grep 'CPU Type' | sed 's/.*://' | sed '/ai_engine/d' | sed 's/^[[:space:]]*//')
+all: package/sd_card.img
 
-ifeq ($(CPU_TYPE), cortex-a9)
-HOST_ARCH := aarch32
-else ifneq (,$(findstring cortex-a, $(CPU_TYPE)))
-HOST_ARCH := aarch64
-else
-HOST_ARCH := x86
-endif
+app.exe: ../src/host.cpp $(img_obj)
+	${CXX} -Wall -g -std=c++11 ../src/host.cpp $(img_obj) -o app.exe \
+		-I/usr/include/xrt \
+		-I${XILINX_VIVADO}/include \
+		-lOpenCL \
+		-lpthread \
+		-lrt \
+		-lstdc++
 
-ifeq ($(DEV_ARCH), zynquplus)
-ifeq ($(HOST_ARCH), aarch64)
-include makefile_zynqmp.mk
-else
-include makefile_us_alveo.mk
-endif
-else ifeq ($(DEV_ARCH), zynq)
-include makefile_zynq7000.mk
-else ifeq ($(DEV_ARCH), versal)
-ifeq ($(HOST_ARCH), x86)
-include makefile_versal_alveo.mk
-else
-include makefile_versal_ps.mk
-endif
-else
-include makefile_us_alveo.mk
-endif
+$(img_obj):$(SRC_DIR)/%.o:$(SRC_DIR)/%.cpp 
+	$(CXX) -Wall -g -std=c++11 -c $^ -o $@
 
-ylxiao:
-	echo $(TARGET)
 
-############################## Help Section ##############################
-help:
-	$(ECHO) "Makefile Usage:"
-	$(ECHO) "  make all TARGET=<sw_emu/hw_emu/hw> PLATFORM=<FPGA platform> EDGE_COMMON_SW=<rootfs and kernel image path>"
-	$(ECHO) "      Command to generate the design for specified Target and Shell."
-	$(ECHO) ""
-	$(ECHO) "  make clean "
-	$(ECHO) "      Command to remove the generated non-hardware files."
-	$(ECHO) ""
-	$(ECHO) "  make cleanall"
-	$(ECHO) "      Command to remove all the generated files."
-	$(ECHO) ""
-	$(ECHO) "  make test PLATFORM=<FPGA platform>"
-	$(ECHO) "      Command to run the application. This is same as 'run' target but does not have any makefile dependency."
-	$(ECHO) ""
-	$(ECHO) "  make sd_card TARGET=<sw_emu/hw_emu/hw> PLATFORM=<FPGA platform> EDGE_COMMON_SW=<rootfs and kernel image path>"
-	$(ECHO) "      Command to prepare sd_card files."
-	$(ECHO) ""
-	$(ECHO) "  make run TARGET=<sw_emu/hw_emu/hw> PLATFORM=<FPGA platform> EDGE_COMMON_SW=<rootfs and kernel image path>"
-	$(ECHO) "      Command to run application in emulation."
-	$(ECHO) ""
-	$(ECHO) "  make build TARGET=<sw_emu/hw_emu/hw> PLATFORM=<FPGA platform> EDGE_COMMON_SW=<rootfs and kernel image path>"
-	$(ECHO) "      Command to build xclbin application."
-	$(ECHO) ""
-	$(ECHO) "  make host EDGE_COMMON_SW=<rootfs and kernel image path>"
-	$(ECHO) "      Command to build host application."
-	$(ECHO) "      EDGE_COMMON_SW is required for SoC shells. Please download and use the pre-built image from - "
-	$(ECHO) "      https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/embedded-platforms.html"
-	$(ECHO) ""
+${kl_name}.xo: ../src/${kl_name}.cpp ../src/zcu102.cfg
+	v++ -c -t hw --config ../src/zcu102.cfg -k ${kl_name} -I../src -I${XILINX_VIVADO}/include ../src/${kl_name}.cpp -o ${kl_name}.xo 
+
+${kl_name}.xclbin: ./${kl_name}.xo
+	v++ -l -t hw --config ../src/zcu102.cfg ./${kl_name}.xo \
+		--vivado.synth.jobs $(MaxJobNum) \
+		--vivado.impl.jobs $(MaxJobNum) \
+		-o ${kl_name}.xclbin
+
+package/sd_card.img: app.exe ${kl_name}.xclbin xrt.ini run_app.sh
+	v++ -p -t hw --config ../src/zcu102.cfg ./${kl_name}.xclbin \
+		--package.out_dir package \
+		--package.rootfs ${ROOTFS}/rootfs.ext4 \
+		--package.sd_file ${ROOTFS}/Image \
+		--package.sd_file ${kl_name}.xclbin \
+		--package.sd_file xrt.ini \
+		--package.sd_file app.exe \
+		--package.sd_file run_app.sh
+
+
+clean:
+	rm -rf *xclbin* app.exe *json *xo *csv *log *summary _x package *.json .run .Xil .ipcache *.jou
+	rm ../src/imageLib/*.o
+
+# Unless specified, use the current directory name as the v++ build target
+TARGET ?= $(notdir $(CURDIR))

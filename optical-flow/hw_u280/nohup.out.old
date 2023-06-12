@@ -1,0 +1,498 @@
+g++ -Wall -g -std=c++11 ../src/host.cpp ../src/imageLib/Convolve.o ../src/imageLib/Image.o ../src/imageLib/RefCntMem.o ../src/imageLib/flowIO.o ../src/imageLib/Convert.o ../src/imageLib/ImageIO.o -o app.exe \
+	-I/opt/xilinx/xrt/include/ \
+	-I/share/xilinx/Vivado/2022.1/include/ \
+	-I/share/xilinx/Vitis_HLS/2022.1/include/ \
+	-L/opt/xilinx/xrt/lib/ -lOpenCL -lpthread -lrt -lstdc++
+emconfigutil --platform xilinx_u280_gen3x16_xdma_1_202211_1 --nd 1
+
+****** configutil v2022.1 (64-bit)
+  **** SW Build 3524075 on 2022-04-13-17:42:45
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+
+INFO: [ConfigUtil 60-895]   Target platform: /share/xilinx/Vitis/2022.1/platforms/xilinx_u280_gen3x16_xdma_1_202211_1/xilinx_u280_gen3x16_xdma_1_202211_1.xpfm
+INFO: [ConfigUtil 60-1578]   This platform contains Xilinx Shell Archive '/share/xilinx/Vitis/2022.1/platforms/xilinx_u280_gen3x16_xdma_1_202211_1/hw/hw.xsa'
+INFO: [ConfigUtil 60-1032] Extracting hardware platform to ./.Xil/configutil-139343-momiji/hw_emu
+emulation configuration file `emconfig.json` is created in current working directory 
+v++ -c -t hw --config ../src/u280.cfg --kernel_frequency 500 -k optical_flow -I/share/xilinx/Vivado/2022.1/include/ -I../src/ ../src/optical_flow.cpp -o optical_flow.xo 
+Option Map File Used: '/share/xilinx/Vitis/2022.1/data/vitis/vpp/optMap.xml'
+INFO: [v++ 82-4274] Default memory will be used for trace offload
+
+****** v++ v2022.1 (64-bit)
+  **** SW Build 3524075 on 2022-04-13-17:42:45
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+
+INFO: [v++ 60-1306] Additional information associated with this v++ compile can be found at:
+	Reports: /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/reports/optical_flow
+	Log files: /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/logs/optical_flow
+Running Dispatch Server on port: 37165
+INFO: [v++ 60-1548] Creating build summary session with primary output /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/optical_flow.xo.compile_summary, at Sun Jun 11 01:13:54 2023
+INFO: [v++ 60-1316] Initiating connection to rulecheck server, at Sun Jun 11 01:13:54 2023
+INFO: [v++ 60-1315] Creating rulecheck session with output '/share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/reports/optical_flow/v++_compile_optical_flow_guidance.html', at Sun Jun 11 01:13:56 2023
+INFO: [v++ 60-895]   Target platform: /share/xilinx/Vitis/2022.1/platforms/xilinx_u280_gen3x16_xdma_1_202211_1/xilinx_u280_gen3x16_xdma_1_202211_1.xpfm
+INFO: [v++ 60-1578]   This platform contains Xilinx Shell Archive '/share/xilinx/Vitis/2022.1/platforms/xilinx_u280_gen3x16_xdma_1_202211_1/hw/hw.xsa'
+INFO: [v++ 74-78] Compiler Version string: 2022.1
+INFO: [v++ 60-585] Compiling for hardware target
+INFO: [v++ 60-423]   Target device: xilinx_u280_gen3x16_xdma_1_202211_1
+INFO: [v++ 60-242] Creating kernel: 'optical_flow'
+INFO: [v++ 60-1616] Creating a HLS clock using kernel_frequency option: 500 MHz
+
+===>The following messages were generated while  performing high-level synthesis for kernel: optical_flow Log file: /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/optical_flow/optical_flow/vitis_hls.log :
+INFO: [v++ 204-61] Pipelining loop 'FRAMES_CP_OUTER_FRAMES_CP_INNER'.
+INFO: [v++ 200-1470] Pipelining result : Target II = 1, Final II = 1, Depth = 3, loop 'FRAMES_CP_OUTER_FRAMES_CP_INNER'
+INFO: [v++ 204-61] Pipelining loop 'GRAD_XY_OUTER_GRAD_XY_INNER'.
+INFO: [v++ 200-1470] Pipelining result : Target II = 1, Final II = 1, Depth = 13, loop 'GRAD_XY_OUTER_GRAD_XY_INNER'
+INFO: [v++ 204-61] Pipelining loop 'GRAD_Z_OUTER_GRAD_Z_INNER'.
+INFO: [v++ 200-1470] Pipelining result : Target II = 1, Final II = 1, Depth = 12, loop 'GRAD_Z_OUTER_GRAD_Z_INNER'
+INFO: [v++ 204-61] Pipelining loop 'GRAD_WEIGHT_Y_OUTER_GRAD_WEIGHT_Y_INNER'.
+INFO: [v++ 200-1470] Pipelining result : Target II = 1, Final II = 1, Depth = 15, loop 'GRAD_WEIGHT_Y_OUTER_GRAD_WEIGHT_Y_INNER'
+INFO: [v++ 204-61] Pipelining loop 'GRAD_WEIGHT_X_OUTER_GRAD_WEIGHT_X_INNER'.
+INFO: [v++ 200-1470] Pipelining result : Target II = 1, Final II = 1, Depth = 13, loop 'GRAD_WEIGHT_X_OUTER_GRAD_WEIGHT_X_INNER'
+INFO: [v++ 204-61] Pipelining loop 'OUTER_OUTER_OUTER_INNER'.
+INFO: [v++ 200-1470] Pipelining result : Target II = 1, Final II = 1, Depth = 5, loop 'OUTER_OUTER_OUTER_INNER'
+INFO: [v++ 204-61] Pipelining loop 'TENSOR_WEIGHT_Y_OUTER_TENSOR_WEIGHT_Y_INNER'.
+WARNING: [v++ 200-885] The II Violation in module 'tensor_weight_y' (loop 'TENSOR_WEIGHT_Y_OUTER_TENSOR_WEIGHT_Y_INNER'): Unable to schedule 'load' operation ('tmp.val.V', /share/xilinx/Vivado/2022.1/include/multimediaIps/xf_video_mem.hpp:870) on array 'buf.val.val.V', /share/atsushi/fpga/rosetta_vitis/optical-flow/src/optical_flow.cpp:253 due to limited memory ports (II = 1). Please consider using a memory core with more ports or partitioning the array 'buf_val_val_V'.
+Resolution: For help on HLS 200-885 see www.xilinx.com/cgi-bin/docs/rdoc?v=2022.1;t=hls+guidance;d=200-885.html
+WARNING: [v++ 200-885] The II Violation in module 'tensor_weight_y' (loop 'TENSOR_WEIGHT_Y_OUTER_TENSOR_WEIGHT_Y_INNER'): Unable to schedule 'load' operation ('tmp.val.V', /share/xilinx/Vivado/2022.1/include/multimediaIps/xf_video_mem.hpp:870) on array 'buf.val.val.V', /share/atsushi/fpga/rosetta_vitis/optical-flow/src/optical_flow.cpp:253 due to limited memory ports (II = 2). Please consider using a memory core with more ports or partitioning the array 'buf_val_val_V'.
+Resolution: For help on HLS 200-885 see www.xilinx.com/cgi-bin/docs/rdoc?v=2022.1;t=hls+guidance;d=200-885.html
+WARNING: [v++ 200-885] The II Violation in module 'tensor_weight_y' (loop 'TENSOR_WEIGHT_Y_OUTER_TENSOR_WEIGHT_Y_INNER'): Unable to schedule 'load' operation ('tmp.val.V', /share/xilinx/Vivado/2022.1/include/multimediaIps/xf_video_mem.hpp:870) on array 'buf.val.val.V', /share/atsushi/fpga/rosetta_vitis/optical-flow/src/optical_flow.cpp:253 due to limited memory ports (II = 3). Please consider using a memory core with more ports or partitioning the array 'buf_val_val_V'.
+Resolution: For help on HLS 200-885 see www.xilinx.com/cgi-bin/docs/rdoc?v=2022.1;t=hls+guidance;d=200-885.html
+WARNING: [v++ 200-885] The II Violation in module 'tensor_weight_y' (loop 'TENSOR_WEIGHT_Y_OUTER_TENSOR_WEIGHT_Y_INNER'): Unable to schedule 'load' operation ('tmp.val.V', /share/xilinx/Vivado/2022.1/include/multimediaIps/xf_video_mem.hpp:870) on array 'buf.val.val.V', /share/atsushi/fpga/rosetta_vitis/optical-flow/src/optical_flow.cpp:253 due to limited memory ports (II = 4). Please consider using a memory core with more ports or partitioning the array 'buf_val_val_V'.
+Resolution: For help on HLS 200-885 see www.xilinx.com/cgi-bin/docs/rdoc?v=2022.1;t=hls+guidance;d=200-885.html
+WARNING: [v++ 200-885] The II Violation in module 'tensor_weight_y' (loop 'TENSOR_WEIGHT_Y_OUTER_TENSOR_WEIGHT_Y_INNER'): Unable to schedule 'load' operation ('tmp.val.V', /share/xilinx/Vivado/2022.1/include/multimediaIps/xf_video_mem.hpp:870) on array 'buf.val.val.V', /share/atsushi/fpga/rosetta_vitis/optical-flow/src/optical_flow.cpp:253 due to limited memory ports (II = 5). Please consider using a memory core with more ports or partitioning the array 'buf_val_val_V'.
+Resolution: For help on HLS 200-885 see www.xilinx.com/cgi-bin/docs/rdoc?v=2022.1;t=hls+guidance;d=200-885.html
+INFO: [v++ 200-1470] Pipelining result : Target II = 1, Final II = 6, Depth = 15, loop 'TENSOR_WEIGHT_Y_OUTER_TENSOR_WEIGHT_Y_INNER'
+INFO: [v++ 204-61] Pipelining loop 'TENSOR_WEIGHT_X_OUTER_TENSOR_WEIGHT_X_INNER'.
+INFO: [v++ 200-1470] Pipelining result : Target II = 1, Final II = 1, Depth = 9, loop 'TENSOR_WEIGHT_X_OUTER_TENSOR_WEIGHT_X_INNER'
+INFO: [v++ 204-61] Pipelining loop 'FLOW_OUTER_FLOW_INNER'.
+INFO: [v++ 200-1470] Pipelining result : Target II = 1, Final II = 1, Depth = 86, loop 'FLOW_OUTER_FLOW_INNER'
+INFO: [v++ 200-790] **** Loop Constraint Status: All loop constraints were NOT satisfied.
+INFO: [v++ 200-789] **** Estimated Fmax: 490.29 MHz
+INFO: [v++ 60-594] Finished kernel compilation
+INFO: [v++ 60-244] Generating system estimate report...
+INFO: [v++ 60-1092] Generated system estimate report: /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/reports/optical_flow/system_estimate_optical_flow.xtxt
+INFO: [v++ 60-586] Created optical_flow.xo
+INFO: [v++ 60-2343] Use the vitis_analyzer tool to visualize and navigate the relevant reports. Run the following command. 
+    vitis_analyzer /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/optical_flow.xo.compile_summary 
+INFO: [v++ 60-791] Total elapsed time: 0h 1m 25s
+INFO: [v++ 60-1653] Closing dispatch client.
+v++ -l -t hw --config ../src/u280.cfg --kernel_frequency 500 ./optical_flow.xo -o optical_flow.xclbin
+Option Map File Used: '/share/xilinx/Vitis/2022.1/data/vitis/vpp/optMap.xml'
+INFO: [v++ 82-4274] Default memory will be used for trace offload
+
+****** v++ v2022.1 (64-bit)
+  **** SW Build 3524075 on 2022-04-13-17:42:45
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+
+INFO: [v++ 60-1306] Additional information associated with this v++ link can be found at:
+	Reports: /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/reports/link
+	Log files: /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/logs/link
+Running Dispatch Server on port: 35717
+INFO: [v++ 60-1548] Creating build summary session with primary output /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/optical_flow.xclbin.link_summary, at Sun Jun 11 01:15:22 2023
+INFO: [v++ 60-1316] Initiating connection to rulecheck server, at Sun Jun 11 01:15:22 2023
+INFO: [v++ 60-1315] Creating rulecheck session with output '/share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/reports/link/v++_link_optical_flow_guidance.html', at Sun Jun 11 01:15:23 2023
+INFO: [v++ 60-895]   Target platform: /share/xilinx/Vitis/2022.1/platforms/xilinx_u280_gen3x16_xdma_1_202211_1/xilinx_u280_gen3x16_xdma_1_202211_1.xpfm
+INFO: [v++ 60-1578]   This platform contains Xilinx Shell Archive '/share/xilinx/Vitis/2022.1/platforms/xilinx_u280_gen3x16_xdma_1_202211_1/hw/hw.xsa'
+INFO: [v++ 74-78] Compiler Version string: 2022.1
+INFO: [v++ 82-4274] Default memory will be used for trace offload
+INFO: [v++ 60-629] Linking for hardware target
+INFO: [v++ 60-423]   Target device: xilinx_u280_gen3x16_xdma_1_202211_1
+INFO: [v++ 60-1332] Run 'run_link' status: Not started
+INFO: [v++ 60-1443] [01:15:29] Run run_link: Step system_link: Started
+INFO: [v++ 60-1453] Command Line: system_link --xo /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/optical_flow.xo -keep --config /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int/syslinkConfig.ini --xpfm /share/xilinx/Vitis/2022.1/platforms/xilinx_u280_gen3x16_xdma_1_202211_1/xilinx_u280_gen3x16_xdma_1_202211_1.xpfm --target hw --output_dir /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int --temp_dir /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link
+INFO: [v++ 60-1454] Run Directory: /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/run_link
+INFO: [SYSTEM_LINK 60-1316] Initiating connection to rulecheck server, at Sun Jun 11 01:15:30 2023
+INFO: [SYSTEM_LINK 82-70] Extracting xo v3 file /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/optical_flow.xo
+INFO: [SYSTEM_LINK 82-53] Creating IP database /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link/_sysl/.cdb/xd_ip_db.xml
+INFO: [SYSTEM_LINK 82-38] [01:15:33] build_xd_ip_db started: /share/xilinx/Vitis/2022.1/bin/build_xd_ip_db -ip_search 0  -sds-pf /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link/hw.hpfm -clkid 0 -ip /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link/iprepo/xilinx_com_hls_optical_flow_1_0,optical_flow -o /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link/_sysl/.cdb/xd_ip_db.xml
+INFO: [SYSTEM_LINK 82-37] [01:15:40] build_xd_ip_db finished successfully
+Time (s): cpu = 00:00:08 ; elapsed = 00:00:08 . Memory (MB): peak = 2272.043 ; gain = 0.000 ; free physical = 195067 ; free virtual = 215869
+INFO: [SYSTEM_LINK 82-51] Create system connectivity graph
+INFO: [SYSTEM_LINK 82-102] Applying explicit connections to the system connectivity graph: /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link/cfgraph/cfgen_cfgraph.xml
+INFO: [SYSTEM_LINK 82-38] [01:15:41] cfgen started: /share/xilinx/Vitis/2022.1/bin/cfgen  -nk optical_flow:1:optical_flow_1 -sp optical_flow_1.frames:HBM[0] -sp optical_flow_1.outputs:HBM[0] -dmclkid 0 -r /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link/_sysl/.cdb/xd_ip_db.xml -o /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link/cfgraph/cfgen_cfgraph.xml
+INFO: [CFGEN 83-0] Kernel Specs: 
+INFO: [CFGEN 83-0]   kernel: optical_flow, num: 1  {optical_flow_1}
+INFO: [CFGEN 83-0] Port Specs: 
+INFO: [CFGEN 83-0]   kernel: optical_flow_1, k_port: frames, sptag: HBM[0]
+INFO: [CFGEN 83-0]   kernel: optical_flow_1, k_port: outputs, sptag: HBM[0]
+INFO: [SYSTEM_LINK 82-37] [01:15:49] cfgen finished successfully
+Time (s): cpu = 00:00:08 ; elapsed = 00:00:08 . Memory (MB): peak = 2272.043 ; gain = 0.000 ; free physical = 195058 ; free virtual = 215740
+INFO: [SYSTEM_LINK 82-52] Create top-level block diagram
+INFO: [SYSTEM_LINK 82-38] [01:15:49] cf2bd started: /share/xilinx/Vitis/2022.1/bin/cf2bd  --linux --trace_buffer 1024 --input_file /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link/cfgraph/cfgen_cfgraph.xml --ip_db /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link/_sysl/.cdb/xd_ip_db.xml --cf_name dr --working_dir /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link/_sysl/.xsd --temp_dir /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link --output_dir /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int --target_bd ulp.bd
+INFO: [CF2BD 82-31] Launching cf2xd: cf2xd -linux -trace-buffer 1024 -i /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link/cfgraph/cfgen_cfgraph.xml -r /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link/_sysl/.cdb/xd_ip_db.xml -o dr.xml
+INFO: [CF2BD 82-28] cf2xd finished successfully
+INFO: [CF2BD 82-31] Launching cf_xsd: cf_xsd -disable-address-gen -bd ulp.bd -dn dr -dp /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link/_sysl/.xsd
+INFO: [CF2BD 82-28] cf_xsd finished successfully
+INFO: [SYSTEM_LINK 82-37] [01:15:53] cf2bd finished successfully
+Time (s): cpu = 00:00:04 ; elapsed = 00:00:04 . Memory (MB): peak = 2272.043 ; gain = 0.000 ; free physical = 194923 ; free virtual = 215610
+INFO: [v++ 60-1441] [01:15:53] Run run_link: Step system_link: Completed
+Time (s): cpu = 00:00:24 ; elapsed = 00:00:24 . Memory (MB): peak = 2188.582 ; gain = 0.000 ; free physical = 194969 ; free virtual = 215656
+INFO: [v++ 60-1443] [01:15:53] Run run_link: Step cf2sw: Started
+INFO: [v++ 60-1453] Command Line: cf2sw -sdsl /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int/sdsl.dat -rtd /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int/cf2sw.rtd -nofilter /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int/cf2sw_full.rtd -xclbin /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int/xclbin_orig.xml -o /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int/xclbin_orig.1.xml
+INFO: [v++ 60-1454] Run Directory: /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/run_link
+INFO: [v++ 60-1441] [01:15:58] Run run_link: Step cf2sw: Completed
+Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 2188.582 ; gain = 0.000 ; free physical = 194921 ; free virtual = 215619
+INFO: [v++ 60-1443] [01:15:58] Run run_link: Step rtd2_system_diagram: Started
+INFO: [v++ 60-1453] Command Line: rtd2SystemDiagram
+INFO: [v++ 60-1454] Run Directory: /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/run_link
+INFO: [v++ 60-1441] [01:15:59] Run run_link: Step rtd2_system_diagram: Completed
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.46 . Memory (MB): peak = 2188.582 ; gain = 0.000 ; free physical = 194890 ; free virtual = 215588
+INFO: [v++ 60-1443] [01:15:59] Run run_link: Step vpl: Started
+INFO: [v++ 60-1453] Command Line: vpl -t hw -f xilinx_u280_gen3x16_xdma_1_202211_1 -g --kernel_frequency 500 --remote_ip_cache /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/.ipcache -s --trace_memory DDR[0] --output_dir /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int --log_dir /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/logs/link --report_dir /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/reports/link --config /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int/vplConfig.ini -k /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int/kernel_info.dat --webtalk_flag Vitis --temp_dir /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link --no-info --iprepo /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int/xo/ip_repo/xilinx_com_hls_optical_flow_1_0 --messageDb /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/run_link/vpl.pb /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int/dr.bd.tcl
+INFO: [v++ 60-1454] Run Directory: /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/run_link
+
+****** vpl v2022.1 (64-bit)
+  **** SW Build 3524075 on 2022-04-13-17:42:45
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+
+INFO: [VPL 60-839] Read in kernel information from file '/share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int/kernel_info.dat'.
+INFO: [VPL 74-78] Compiler Version string: 2022.1
+INFO: [VPL 60-423]   Target device: xilinx_u280_gen3x16_xdma_1_202211_1
+INFO: [VPL 82-4282] Memory used for trace offload is DDR 0 
+INFO: [VPL 60-1032] Extracting hardware platform to /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/vivado/vpl/.local/hw_platform
+[01:16:17] Run vpl: Step create_project: Started
+Creating Vivado project.
+[01:16:22] Run vpl: Step create_project: Completed
+[01:16:22] Run vpl: Step create_bd: Started
+[01:16:58] Run vpl: Step create_bd: Completed
+[01:16:58] Run vpl: Step update_bd: Started
+WARNING: [VPL-1] The use of profile options turned on trace, which uses a memory resource in one SLR; however kernels or compute units could potentially be located in multiple SLRs. This may impact timing due to SLR crossing. To improve timing, please consider implementing trace memory in every SLRs used via the linker option: --profile.trace_memory <memory>:<SLR>. SLRs present on the design : SLR0 SLR1 SLR2
+[01:17:02] Run vpl: Step update_bd: Completed
+[01:17:02] Run vpl: Step generate_target: Started
+[01:18:19] Run vpl: Step generate_target: RUNNING...
+[01:19:33] Run vpl: Step generate_target: Completed
+[01:19:33] Run vpl: Step config_hw_runs: Started
+[01:20:52] Run vpl: Step config_hw_runs: RUNNING...
+[01:21:45] Run vpl: Step config_hw_runs: Completed
+[01:21:45] Run vpl: Step synth: Started
+[01:22:17] Block-level synthesis in progress, 0 of 173 jobs complete, 8 jobs running.
+[01:22:51] Block-level synthesis in progress, 0 of 173 jobs complete, 8 jobs running.
+[01:23:23] Block-level synthesis in progress, 0 of 173 jobs complete, 8 jobs running.
+[01:23:54] Block-level synthesis in progress, 6 of 173 jobs complete, 4 jobs running.
+[01:24:27] Block-level synthesis in progress, 7 of 173 jobs complete, 8 jobs running.
+[01:24:58] Block-level synthesis in progress, 7 of 173 jobs complete, 8 jobs running.
+[01:25:29] Block-level synthesis in progress, 11 of 173 jobs complete, 4 jobs running.
+[01:26:00] Block-level synthesis in progress, 14 of 173 jobs complete, 7 jobs running.
+[01:26:33] Block-level synthesis in progress, 14 of 173 jobs complete, 8 jobs running.
+[01:27:04] Block-level synthesis in progress, 15 of 173 jobs complete, 7 jobs running.
+[01:27:35] Block-level synthesis in progress, 20 of 173 jobs complete, 6 jobs running.
+[01:28:07] Block-level synthesis in progress, 20 of 173 jobs complete, 8 jobs running.
+[01:28:38] Block-level synthesis in progress, 20 of 173 jobs complete, 8 jobs running.
+[01:29:11] Block-level synthesis in progress, 22 of 173 jobs complete, 7 jobs running.
+[01:29:43] Block-level synthesis in progress, 25 of 173 jobs complete, 7 jobs running.
+[01:30:15] Block-level synthesis in progress, 27 of 173 jobs complete, 7 jobs running.
+[01:30:46] Block-level synthesis in progress, 29 of 173 jobs complete, 8 jobs running.
+[01:31:18] Block-level synthesis in progress, 32 of 173 jobs complete, 5 jobs running.
+[01:31:51] Block-level synthesis in progress, 34 of 173 jobs complete, 7 jobs running.
+[01:32:24] Block-level synthesis in progress, 35 of 173 jobs complete, 8 jobs running.
+[01:32:55] Block-level synthesis in progress, 37 of 173 jobs complete, 8 jobs running.
+[01:33:27] Block-level synthesis in progress, 37 of 173 jobs complete, 8 jobs running.
+[01:33:59] Block-level synthesis in progress, 39 of 173 jobs complete, 8 jobs running.
+[01:34:31] Block-level synthesis in progress, 40 of 173 jobs complete, 7 jobs running.
+[01:35:02] Block-level synthesis in progress, 44 of 173 jobs complete, 6 jobs running.
+[01:35:34] Block-level synthesis in progress, 44 of 173 jobs complete, 8 jobs running.
+[01:36:06] Block-level synthesis in progress, 45 of 173 jobs complete, 8 jobs running.
+[01:36:39] Block-level synthesis in progress, 47 of 173 jobs complete, 6 jobs running.
+[01:37:11] Block-level synthesis in progress, 50 of 173 jobs complete, 7 jobs running.
+[01:37:44] Block-level synthesis in progress, 50 of 173 jobs complete, 8 jobs running.
+[01:38:16] Block-level synthesis in progress, 51 of 173 jobs complete, 8 jobs running.
+[01:38:49] Block-level synthesis in progress, 55 of 173 jobs complete, 4 jobs running.
+[01:39:21] Block-level synthesis in progress, 57 of 173 jobs complete, 7 jobs running.
+[01:39:55] Block-level synthesis in progress, 57 of 173 jobs complete, 8 jobs running.
+[01:40:27] Block-level synthesis in progress, 57 of 173 jobs complete, 8 jobs running.
+[01:41:00] Block-level synthesis in progress, 61 of 173 jobs complete, 5 jobs running.
+[01:41:32] Block-level synthesis in progress, 63 of 173 jobs complete, 7 jobs running.
+[01:42:03] Block-level synthesis in progress, 63 of 173 jobs complete, 8 jobs running.
+[01:42:35] Block-level synthesis in progress, 64 of 173 jobs complete, 8 jobs running.
+[01:43:08] Block-level synthesis in progress, 68 of 173 jobs complete, 7 jobs running.
+[01:43:41] Block-level synthesis in progress, 71 of 173 jobs complete, 8 jobs running.
+[01:44:13] Block-level synthesis in progress, 71 of 173 jobs complete, 8 jobs running.
+[01:44:45] Block-level synthesis in progress, 76 of 173 jobs complete, 5 jobs running.
+[01:45:19] Block-level synthesis in progress, 81 of 173 jobs complete, 6 jobs running.
+[01:45:50] Block-level synthesis in progress, 88 of 173 jobs complete, 4 jobs running.
+[01:46:22] Block-level synthesis in progress, 92 of 173 jobs complete, 6 jobs running.
+[01:46:55] Block-level synthesis in progress, 98 of 173 jobs complete, 7 jobs running.
+[01:47:27] Block-level synthesis in progress, 103 of 173 jobs complete, 6 jobs running.
+[01:47:59] Block-level synthesis in progress, 110 of 173 jobs complete, 5 jobs running.
+[01:48:31] Block-level synthesis in progress, 116 of 173 jobs complete, 5 jobs running.
+[01:49:04] Block-level synthesis in progress, 120 of 173 jobs complete, 6 jobs running.
+[01:49:36] Block-level synthesis in progress, 120 of 173 jobs complete, 8 jobs running.
+[01:50:09] Block-level synthesis in progress, 122 of 173 jobs complete, 6 jobs running.
+[01:50:42] Block-level synthesis in progress, 126 of 173 jobs complete, 5 jobs running.
+[01:51:14] Block-level synthesis in progress, 132 of 173 jobs complete, 6 jobs running.
+[01:51:46] Block-level synthesis in progress, 139 of 173 jobs complete, 6 jobs running.
+[01:52:19] Block-level synthesis in progress, 139 of 173 jobs complete, 8 jobs running.
+[01:52:52] Block-level synthesis in progress, 139 of 173 jobs complete, 8 jobs running.
+[01:53:25] Block-level synthesis in progress, 144 of 173 jobs complete, 5 jobs running.
+[01:53:57] Block-level synthesis in progress, 146 of 173 jobs complete, 8 jobs running.
+[01:54:29] Block-level synthesis in progress, 146 of 173 jobs complete, 8 jobs running.
+[01:55:01] Block-level synthesis in progress, 152 of 173 jobs complete, 4 jobs running.
+[01:55:35] Block-level synthesis in progress, 157 of 173 jobs complete, 8 jobs running.
+[01:56:07] Block-level synthesis in progress, 157 of 173 jobs complete, 8 jobs running.
+[01:56:38] Block-level synthesis in progress, 159 of 173 jobs complete, 7 jobs running.
+[01:57:11] Block-level synthesis in progress, 167 of 173 jobs complete, 5 jobs running.
+[01:57:43] Block-level synthesis in progress, 170 of 173 jobs complete, 3 jobs running.
+[01:58:15] Block-level synthesis in progress, 171 of 173 jobs complete, 2 jobs running.
+[01:58:47] Top-level synthesis in progress.
+[01:59:18] Top-level synthesis in progress.
+[01:59:51] Top-level synthesis in progress.
+[02:00:24] Run vpl: Step synth: Completed
+[02:00:24] Run vpl: Step impl: Started
+[02:13:16] Finished 2nd of 6 tasks (FPGA linking synthesized kernels to platform). Elapsed time: 00h 57m 15s 
+
+[02:13:16] Starting logic optimization..
+[02:13:16] Phase 1 Generate And Synthesize MIG Cores
+[02:19:44] Phase 2 Generate And Synthesize Debug Cores
+[02:23:29] Phase 3 Retarget
+[02:24:02] Phase 4 Constant propagation
+[02:24:02] Phase 5 Sweep
+[02:25:06] Phase 6 BUFG optimization
+[02:25:38] Phase 7 Shift Register Optimization
+[02:25:38] Phase 8 Post Processing Netlist
+[02:28:21] Finished 3rd of 6 tasks (FPGA logic optimization). Elapsed time: 00h 15m 04s 
+
+[02:28:21] Starting logic placement..
+[02:29:26] Phase 1 Placer Initialization
+[02:29:26] Phase 1.1 Placer Initialization Netlist Sorting
+[02:36:35] Phase 1.2 IO Placement/ Clock Placement/ Build Placer Device
+[02:38:15] Phase 1.3 Build Placer Netlist Model
+[02:42:53] Phase 1.4 Constrain Clocks/Macros
+[02:44:04] Phase 2 Global Placement
+[02:44:04] Phase 2.1 Floorplanning
+[02:46:32] Phase 2.1.1 Partition Driven Placement
+[02:46:32] Phase 2.1.1.1 PBP: Partition Driven Placement
+[02:48:29] Phase 2.1.1.2 PBP: Clock Region Placement
+[02:51:04] Phase 2.1.1.3 PBP: Compute Congestion
+[02:51:47] Phase 2.1.1.4 PBP: UpdateTiming
+[02:52:24] Phase 2.1.1.5 PBP: Add part constraints
+[02:53:08] Phase 2.2 Physical Synthesis After Floorplan
+[02:54:36] Phase 2.3 Update Timing before SLR Path Opt
+[02:54:36] Phase 2.4 Post-Processing in Floorplanning
+[02:54:36] Phase 2.5 Global Placement Core
+[03:22:46] Run vpl: Step impl: Failed
+[03:24:21] Run vpl: FINISHED. Run Status: impl ERROR
+ERROR: [VPL 60-773] In '/share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/vivado/vpl/runme.log', caught Tcl error:  problem implementing dynamic region, impl_1: place_design ERROR, please look at the run log file '/share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/vivado/vpl/prj/prj.runs/impl_1/runme.log' for more information
+ERROR: [VPL 60-704] Integration error, problem implementing dynamic region, impl_1: place_design ERROR, please look at the run log file '/share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/vivado/vpl/prj/prj.runs/impl_1/runme.log' for more information
+ERROR: [VPL 60-1328] Vpl run 'vpl' failed
+ERROR: [VPL 60-806] Failed to finish platform linker
+INFO: [v++ 60-1442] [03:26:24] Run run_link: Step vpl: Failed
+Time (s): cpu = 00:03:18 ; elapsed = 02:10:26 . Memory (MB): peak = 2188.582 ; gain = 0.000 ; free physical = 44102 ; free virtual = 48369
+ERROR: [v++ 60-661] v++ link run 'run_link' failed
+ERROR: [v++ 60-626] Kernel link failed to complete
+ERROR: [v++ 60-703] Failed to finish linking
+INFO: [v++ 60-1653] Closing dispatch client.
+make: *** [Makefile:28: optical_flow.xclbin] Error 1
+v++ -l -t hw --config ../src/u280.cfg --kernel_frequency 500 ./optical_flow.xo -o optical_flow.xclbin
+Option Map File Used: '/share/xilinx/Vitis/2022.1/data/vitis/vpp/optMap.xml'
+INFO: [v++ 82-4274] Default memory will be used for trace offload
+
+****** v++ v2022.1 (64-bit)
+  **** SW Build 3524075 on 2022-04-13-17:42:45
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+
+INFO: [v++ 60-1306] Additional information associated with this v++ link can be found at:
+	Reports: /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/reports/link
+	Log files: /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/logs/link
+Running Dispatch Server on port: 46353
+INFO: [v++ 60-1548] Creating build summary session with primary output /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/optical_flow.xclbin.link_summary, at Sun Jun 11 13:29:21 2023
+INFO: [v++ 60-1316] Initiating connection to rulecheck server, at Sun Jun 11 13:29:21 2023
+INFO: [v++ 60-1315] Creating rulecheck session with output '/share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/reports/link/v++_link_optical_flow_guidance.html', at Sun Jun 11 13:29:23 2023
+INFO: [v++ 60-895]   Target platform: /share/xilinx/Vitis/2022.1/platforms/xilinx_u280_gen3x16_xdma_1_202211_1/xilinx_u280_gen3x16_xdma_1_202211_1.xpfm
+INFO: [v++ 60-1578]   This platform contains Xilinx Shell Archive '/share/xilinx/Vitis/2022.1/platforms/xilinx_u280_gen3x16_xdma_1_202211_1/hw/hw.xsa'
+INFO: [v++ 74-78] Compiler Version string: 2022.1
+INFO: [v++ 82-4274] Default memory will be used for trace offload
+INFO: [v++ 60-629] Linking for hardware target
+INFO: [v++ 60-423]   Target device: xilinx_u280_gen3x16_xdma_1_202211_1
+INFO: [v++ 60-1332] Run 'run_link' status: Not started
+INFO: [v++ 60-1443] [13:29:28] Run run_link: Step system_link: Started
+INFO: [v++ 60-1453] Command Line: system_link --xo /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/optical_flow.xo -keep --config /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int/syslinkConfig.ini --xpfm /share/xilinx/Vitis/2022.1/platforms/xilinx_u280_gen3x16_xdma_1_202211_1/xilinx_u280_gen3x16_xdma_1_202211_1.xpfm --target hw --output_dir /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int --temp_dir /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link
+INFO: [v++ 60-1454] Run Directory: /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/run_link
+INFO: [SYSTEM_LINK 60-1316] Initiating connection to rulecheck server, at Sun Jun 11 13:29:30 2023
+INFO: [SYSTEM_LINK 82-70] Extracting xo v3 file /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/optical_flow.xo
+INFO: [SYSTEM_LINK 82-53] Creating IP database /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link/_sysl/.cdb/xd_ip_db.xml
+INFO: [SYSTEM_LINK 82-38] [13:29:31] build_xd_ip_db started: /share/xilinx/Vitis/2022.1/bin/build_xd_ip_db -ip_search 0  -sds-pf /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link/hw.hpfm -clkid 0 -ip /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link/iprepo/xilinx_com_hls_optical_flow_1_0,optical_flow -o /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link/_sysl/.cdb/xd_ip_db.xml
+INFO: [SYSTEM_LINK 82-37] [13:29:38] build_xd_ip_db finished successfully
+Time (s): cpu = 00:00:09 ; elapsed = 00:00:08 . Memory (MB): peak = 2272.043 ; gain = 0.000 ; free physical = 218070 ; free virtual = 249693
+INFO: [SYSTEM_LINK 82-51] Create system connectivity graph
+INFO: [SYSTEM_LINK 82-102] Applying explicit connections to the system connectivity graph: /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link/cfgraph/cfgen_cfgraph.xml
+INFO: [SYSTEM_LINK 82-38] [13:29:38] cfgen started: /share/xilinx/Vitis/2022.1/bin/cfgen  -nk optical_flow:1:optical_flow_1 -sp optical_flow_1.frames:HBM[0] -sp optical_flow_1.outputs:HBM[0] -dmclkid 0 -r /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link/_sysl/.cdb/xd_ip_db.xml -o /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link/cfgraph/cfgen_cfgraph.xml
+INFO: [CFGEN 83-0] Kernel Specs: 
+INFO: [CFGEN 83-0]   kernel: optical_flow, num: 1  {optical_flow_1}
+INFO: [CFGEN 83-0] Port Specs: 
+INFO: [CFGEN 83-0]   kernel: optical_flow_1, k_port: frames, sptag: HBM[0]
+INFO: [CFGEN 83-0]   kernel: optical_flow_1, k_port: outputs, sptag: HBM[0]
+INFO: [SYSTEM_LINK 82-37] [13:29:46] cfgen finished successfully
+Time (s): cpu = 00:00:08 ; elapsed = 00:00:08 . Memory (MB): peak = 2272.043 ; gain = 0.000 ; free physical = 218070 ; free virtual = 249692
+INFO: [SYSTEM_LINK 82-52] Create top-level block diagram
+INFO: [SYSTEM_LINK 82-38] [13:29:46] cf2bd started: /share/xilinx/Vitis/2022.1/bin/cf2bd  --linux --trace_buffer 1024 --input_file /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link/cfgraph/cfgen_cfgraph.xml --ip_db /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link/_sysl/.cdb/xd_ip_db.xml --cf_name dr --working_dir /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link/_sysl/.xsd --temp_dir /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link --output_dir /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int --target_bd ulp.bd
+INFO: [CF2BD 82-31] Launching cf2xd: cf2xd -linux -trace-buffer 1024 -i /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link/cfgraph/cfgen_cfgraph.xml -r /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link/_sysl/.cdb/xd_ip_db.xml -o dr.xml
+INFO: [CF2BD 82-28] cf2xd finished successfully
+INFO: [CF2BD 82-31] Launching cf_xsd: cf_xsd -disable-address-gen -bd ulp.bd -dn dr -dp /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/sys_link/_sysl/.xsd
+INFO: [CF2BD 82-28] cf_xsd finished successfully
+INFO: [SYSTEM_LINK 82-37] [13:29:50] cf2bd finished successfully
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:04 . Memory (MB): peak = 2272.043 ; gain = 0.000 ; free physical = 218054 ; free virtual = 249684
+INFO: [v++ 60-1441] [13:29:50] Run run_link: Step system_link: Completed
+Time (s): cpu = 00:00:23 ; elapsed = 00:00:22 . Memory (MB): peak = 2191.617 ; gain = 0.000 ; free physical = 218095 ; free virtual = 249724
+INFO: [v++ 60-1443] [13:29:50] Run run_link: Step cf2sw: Started
+INFO: [v++ 60-1453] Command Line: cf2sw -sdsl /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int/sdsl.dat -rtd /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int/cf2sw.rtd -nofilter /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int/cf2sw_full.rtd -xclbin /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int/xclbin_orig.xml -o /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int/xclbin_orig.1.xml
+INFO: [v++ 60-1454] Run Directory: /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/run_link
+INFO: [v++ 60-1441] [13:29:55] Run run_link: Step cf2sw: Completed
+Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 2191.617 ; gain = 0.000 ; free physical = 218096 ; free virtual = 249726
+INFO: [v++ 60-1443] [13:29:55] Run run_link: Step rtd2_system_diagram: Started
+INFO: [v++ 60-1453] Command Line: rtd2SystemDiagram
+INFO: [v++ 60-1454] Run Directory: /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/run_link
+INFO: [v++ 60-1441] [13:29:56] Run run_link: Step rtd2_system_diagram: Completed
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.38 . Memory (MB): peak = 2191.617 ; gain = 0.000 ; free physical = 218070 ; free virtual = 249700
+INFO: [v++ 60-1443] [13:29:56] Run run_link: Step vpl: Started
+INFO: [v++ 60-1453] Command Line: vpl -t hw -f xilinx_u280_gen3x16_xdma_1_202211_1 -g --kernel_frequency 500 --remote_ip_cache /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/.ipcache -s --trace_memory DDR[0] --output_dir /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int --log_dir /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/logs/link --report_dir /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/reports/link --config /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int/vplConfig.ini -k /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int/kernel_info.dat --webtalk_flag Vitis --temp_dir /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link --no-info --iprepo /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int/xo/ip_repo/xilinx_com_hls_optical_flow_1_0 --messageDb /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/run_link/vpl.pb /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int/dr.bd.tcl
+INFO: [v++ 60-1454] Run Directory: /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/run_link
+
+****** vpl v2022.1 (64-bit)
+  **** SW Build 3524075 on 2022-04-13-17:42:45
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+
+INFO: [VPL 60-839] Read in kernel information from file '/share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/int/kernel_info.dat'.
+INFO: [VPL 74-78] Compiler Version string: 2022.1
+INFO: [VPL 60-423]   Target device: xilinx_u280_gen3x16_xdma_1_202211_1
+INFO: [VPL 82-4282] Memory used for trace offload is DDR 0 
+INFO: [VPL 60-1032] Extracting hardware platform to /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/vivado/vpl/.local/hw_platform
+[13:30:15] Run vpl: Step create_project: Started
+Creating Vivado project.
+[13:30:20] Run vpl: Step create_project: Completed
+[13:30:20] Run vpl: Step create_bd: Started
+[13:30:58] Run vpl: Step create_bd: Completed
+[13:30:58] Run vpl: Step update_bd: Started
+WARNING: [VPL-1] The use of profile options turned on trace, which uses a memory resource in one SLR; however kernels or compute units could potentially be located in multiple SLRs. This may impact timing due to SLR crossing. To improve timing, please consider implementing trace memory in every SLRs used via the linker option: --profile.trace_memory <memory>:<SLR>. SLRs present on the design : SLR0 SLR1 SLR2
+[13:31:02] Run vpl: Step update_bd: Completed
+[13:31:02] Run vpl: Step generate_target: Started
+[13:32:18] Run vpl: Step generate_target: RUNNING...
+[13:33:32] Run vpl: Step generate_target: Completed
+[13:33:32] Run vpl: Step config_hw_runs: Started
+[13:33:35] Run vpl: Step config_hw_runs: Completed
+[13:33:35] Run vpl: Step synth: Started
+[13:34:08] Block-level synthesis in progress, 0 of 1 jobs complete, 1 job running.
+[13:34:39] Block-level synthesis in progress, 0 of 1 jobs complete, 1 job running.
+[13:35:10] Block-level synthesis in progress, 0 of 1 jobs complete, 1 job running.
+[13:35:15] Run vpl: Step synth: Completed
+[13:35:15] Run vpl: Step impl: Started
+[13:45:31] Finished 2nd of 6 tasks (FPGA linking synthesized kernels to platform). Elapsed time: 00h 15m 33s 
+
+[13:45:31] Starting logic optimization..
+[13:46:02] Phase 1 Generate And Synthesize MIG Cores
+[13:49:37] Phase 2 Generate And Synthesize Debug Cores
+[13:51:09] Phase 3 Retarget
+[13:51:09] Phase 4 Constant propagation
+[13:51:40] Phase 5 Sweep
+[13:52:42] Phase 6 BUFG optimization
+[13:52:42] Phase 7 Shift Register Optimization
+[13:52:42] Phase 8 Post Processing Netlist
+[13:54:45] Finished 3rd of 6 tasks (FPGA logic optimization). Elapsed time: 00h 09m 13s 
+
+[13:54:45] Starting logic placement..
+[13:55:16] Phase 1 Placer Initialization
+[13:55:16] Phase 1.1 Placer Initialization Netlist Sorting
+[13:58:20] Phase 1.2 IO Placement/ Clock Placement/ Build Placer Device
+[13:59:22] Phase 1.3 Build Placer Netlist Model
+[14:01:25] Phase 1.4 Constrain Clocks/Macros
+[14:01:55] Phase 2 Global Placement
+[14:01:55] Phase 2.1 Floorplanning
+[14:02:57] Phase 2.1.1 Partition Driven Placement
+[14:02:57] Phase 2.1.1.1 PBP: Partition Driven Placement
+[14:03:28] Phase 2.1.1.2 PBP: Clock Region Placement
+[14:04:30] Phase 2.1.1.3 PBP: Compute Congestion
+[14:04:30] Phase 2.1.1.4 PBP: UpdateTiming
+[14:05:00] Phase 2.1.1.5 PBP: Add part constraints
+[14:05:00] Phase 2.2 Physical Synthesis After Floorplan
+[14:05:31] Phase 2.3 Update Timing before SLR Path Opt
+[14:05:31] Phase 2.4 Post-Processing in Floorplanning
+[14:05:31] Phase 2.5 Global Placement Core
+[14:17:52] Phase 2.5.1 Physical Synthesis In Placer
+[14:20:27] Phase 3 Detail Placement
+[14:20:27] Phase 3.1 Commit Multi Column Macros
+[14:20:27] Phase 3.2 Commit Most Macros & LUTRAMs
+[14:21:59] Phase 3.3 Small Shape DP
+[14:21:59] Phase 3.3.1 Small Shape Clustering
+[14:22:30] Phase 3.3.2 Flow Legalize Slice Clusters
+[14:22:30] Phase 3.3.3 Slice Area Swap
+[14:22:30] Phase 3.3.3.1 Slice Area Swap Initial
+[14:24:03] Phase 3.4 Place Remaining
+[14:24:03] Phase 3.5 Re-assign LUT pins
+[14:24:34] Phase 3.6 Pipeline Register Optimization
+[14:24:34] Phase 3.7 Fast Optimization
+[14:25:35] Phase 4 Post Placement Optimization and Clean-Up
+[14:25:35] Phase 4.1 Post Commit Optimization
+[14:27:08] Phase 4.1.1 Post Placement Optimization
+[14:27:08] Phase 4.1.1.1 BUFG Insertion
+[14:27:08] Phase 1 Physical Synthesis Initialization
+[14:27:39] Phase 4.1.1.2 BUFG Replication
+[14:27:39] Phase 4.1.1.3 Post Placement Timing Optimization
+[14:35:22] Phase 4.1.1.4 Replication
+[14:36:54] Phase 4.2 Post Placement Cleanup
+[14:36:54] Phase 4.3 Placer Reporting
+[14:36:54] Phase 4.3.1 Print Estimated Congestion
+[14:36:54] Phase 4.4 Final Placement Cleanup
+[14:47:12] Finished 4th of 6 tasks (FPGA logic placement). Elapsed time: 00h 52m 27s 
+
+[14:47:12] Starting logic routing..
+[14:47:43] Phase 1 Build RT Design
+[14:49:46] Phase 2 Router Initialization
+[14:49:46] Phase 2.1 Fix Topology Constraints
+[14:50:17] Phase 2.2 Pre Route Cleanup
+[14:50:17] Phase 2.3 Global Clock Net Routing
+[14:50:48] Phase 2.4 Update Timing
+[14:52:51] Phase 2.5 Update Timing for Bus Skew
+[14:52:51] Phase 2.5.1 Update Timing
+[14:53:53] Phase 3 Initial Routing
+[14:53:53] Phase 3.1 Global Routing
+[14:55:25] Phase 4 Rip-up And Reroute
+[14:55:25] Phase 4.1 Global Iteration 0
+[15:05:12] Phase 4.2 Global Iteration 1
+[15:07:47] Phase 4.3 Global Iteration 2
+[15:09:50] Phase 4.4 Global Iteration 3
+[15:13:57] Phase 4.5 Global Iteration 4
+[15:17:03] Phase 4.6 Global Iteration 5
+[15:21:10] Phase 4.7 Global Iteration 6
+[15:24:46] Phase 5 Delay and Skew Optimization
+[15:24:46] Phase 5.1 Delay CleanUp
+[15:24:46] Phase 5.1.1 Update Timing
+[15:25:48] Phase 5.1.2 Update Timing
+[15:26:19] Phase 5.2 Clock Skew Optimization
+[15:26:50] Phase 6 Post Hold Fix
+[15:26:50] Phase 6.1 Hold Fix Iter
+[15:26:50] Phase 6.1.1 Update Timing
+[15:27:51] Phase 7 Leaf Clock Prog Delay Opt
+[15:30:26] Phase 7.1 Delay CleanUp
+[15:30:26] Phase 7.1.1 Update Timing
+[15:30:57] Phase 7.1.2 Update Timing
+[15:31:58] Phase 7.2 Hold Fix Iter
+[15:31:58] Phase 7.2.1 Update Timing
+[15:34:02] Phase 8 Route finalize
+[15:34:02] Phase 9 Verifying routed nets
+[15:34:33] Phase 10 Depositing Routes
+[15:35:04] Phase 11 Resolve XTalk
+[15:35:04] Phase 12 Post Router Timing
+[15:36:05] Phase 13 Physical Synthesis in Router
+[15:36:05] Phase 13.1 Physical Synthesis Initialization
+[15:37:38] Phase 13.2 Critical Path Optimization
+[15:39:11] Finished 5th of 6 tasks (FPGA routing). Elapsed time: 00h 51m 58s 
+
+[15:39:11] Starting bitstream generation..
+[15:45:59] Run vpl: Step impl: Failed
+[15:46:00] Run vpl: FINISHED. Run Status: impl ERROR
+
+===>The following messages were generated while  Compiling (bitstream) accelerator binary: optical_flow Log file: /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/vivado/vpl/prj/prj.runs/impl_1/runme.log  :
+ERROR: [VPL 101-2] design did not meet timing - Design did not meet timing. One or more unscalable system clocks did not meet their required target frequency. For all system clocks, this design is using 0 nanoseconds as the threshold worst negative slack (WNS) value. List of system clocks with timing failure:
+system clock: pll_clk[2]_DIV; slack: -0.337 ns
+system clock: mmcm_clkout0; slack: -0.171 ns
+system clock: pll_clk[0]_DIV; slack: -0.140 ns
+ERROR: [VPL 101-3] sourcing script /share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/vivado/vpl/scripts/impl_1/_full_write_bitstream_pre.tcl failed
+ERROR: [VPL 60-773] In '/share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/vivado/vpl/runme.log', caught Tcl error:  problem implementing dynamic region, impl_1: write_bitstream ERROR, please look at the run log file '/share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/vivado/vpl/prj/prj.runs/impl_1/runme.log' for more information
+ERROR: [VPL 60-704] Integration error, problem implementing dynamic region, impl_1: write_bitstream ERROR, please look at the run log file '/share/atsushi/fpga/rosetta_vitis/optical-flow/hw_u280/_x/link/vivado/vpl/prj/prj.runs/impl_1/runme.log' for more information
+ERROR: [VPL 60-1328] Vpl run 'vpl' failed
+ERROR: [VPL 60-806] Failed to finish platform linker
+INFO: [v++ 60-1442] [15:46:03] Run run_link: Step vpl: Failed
+Time (s): cpu = 00:01:02 ; elapsed = 02:16:07 . Memory (MB): peak = 2191.617 ; gain = 0.000 ; free physical = 171826 ; free virtual = 208510
+ERROR: [v++ 60-661] v++ link run 'run_link' failed
+ERROR: [v++ 60-626] Kernel link failed to complete
+ERROR: [v++ 60-703] Failed to finish linking
+INFO: [v++ 60-1653] Closing dispatch client.
+make: *** [Makefile:28: optical_flow.xclbin] Error 1
