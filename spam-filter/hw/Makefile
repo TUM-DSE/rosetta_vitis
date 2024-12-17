@@ -8,6 +8,7 @@ app.exe: $(SRC_DIR)/host.cpp
 	g++ -Wall -g -std=c++11 $(SRC_DIR)/host.cpp -o app.exe \
 		-I${XILINX_XRT}/include/ \
 		-I${XILINX_VIVADO}/include/ \
+		-I${XILINX_HLS}/include/ \
 		-L${XILINX_XRT}/lib/ -lOpenCL -pthread -lrt -lstdc++
 	
 $(PRJ_NAME).xo: $(SRC_DIR)/$(PRJ_NAME).cpp
