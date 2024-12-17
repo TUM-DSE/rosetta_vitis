@@ -1,5 +1,6 @@
 PRJ_NAME=spam_filter
 SRC_DIR=../src
+FREQ=0:300
 
 all: app.exe emconfig.json $(PRJ_NAME).xclbin
 
@@ -7,13 +8,13 @@ app.exe: $(SRC_DIR)/host.cpp
 	g++ -Wall -g -std=c++11 $(SRC_DIR)/host.cpp -o app.exe \
 		-I${XILINX_XRT}/include/ \
 		-I${XILINX_VIVADO}/include/ \
-		-L${XILINX_XRT}/lib/ -lOpenCL -lpthread -lrt -lstdc++
+		-L${XILINX_XRT}/lib/ -lOpenCL -pthread -lrt -lstdc++
 	
 $(PRJ_NAME).xo: $(SRC_DIR)/$(PRJ_NAME).cpp
 	v++ -c -t ${TARGET} --config $(SRC_DIR)/u50.cfg -k $(PRJ_NAME) -I${XILINX_VIVADO}/include/ -I$(SRC_DIR)/ $(SRC_DIR)/$(PRJ_NAME).cpp -o $(PRJ_NAME).xo 
 
 $(PRJ_NAME).xclbin: ./$(PRJ_NAME).xo
-	v++ -l -t ${TARGET} --config $(SRC_DIR)/u50.cfg ./$(PRJ_NAME).xo -o $(PRJ_NAME).xclbin
+	v++ -l -t ${TARGET} --config $(SRC_DIR)/u50.cfg --kernel_frequency=$(FREQ) ./$(PRJ_NAME).xo -o $(PRJ_NAME).xclbin
 
 emconfig.json:
 	emconfigutil --platform xilinx_u50_gen3x16_xdma_201920_3 --nd 1
